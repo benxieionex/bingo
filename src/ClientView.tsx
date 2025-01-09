@@ -3,7 +3,7 @@ import { io } from "socket.io-client";
 import "./App.css";
 
 // 確保只創建一個 socket 實例
-const socket = io(`http://${window.location.hostname}:1234`, {
+const socket = io("https://ionex.sexyoung.tw", {
   reconnection: true,
   reconnectionDelay: 1000,
   reconnectionDelayMax: 5000,

@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { io } from "socket.io-client";
 import "./App.css";
 
-const socket = io(`http://${window.location.hostname}:1234`, {
+const socket = io("https://ionex.sexyoung.tw", {
   reconnection: true,
   reconnectionDelay: 1000,
   reconnectionDelayMax: 5000,
