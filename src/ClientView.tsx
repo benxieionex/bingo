@@ -15,6 +15,18 @@ function ClientView() {
   const [latestNumber, setLatestNumber] = useState<number | null>(null);
   const [sortByNewest, setSortByNewest] = useState(false);
   const [connected, setConnected] = useState(false);
+  const [markedNumbers, setMarkedNumbers] = useState<Set<number>>(() => {
+    const saved = localStorage.getItem("markedNumbers");
+    return new Set(saved ? JSON.parse(saved) : []);
+  });
+
+  useEffect(() => {
+    // 保存標記的數字到 localStorage
+    localStorage.setItem(
+      "markedNumbers",
+      JSON.stringify(Array.from(markedNumbers))
+    );
+  }, [markedNumbers]);
 
   useEffect(() => {
     // 連接狀態處理
@@ -66,6 +78,18 @@ function ClientView() {
     return [...numbers].sort((a, b) => a - b);
   };
 
+  const toggleMark = (number: number) => {
+    setMarkedNumbers((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(number)) {
+        newSet.delete(number);
+      } else {
+        newSet.add(number);
+      }
+      return newSet;
+    });
+  };
+
   if (!connected) {
     return (
       <div className="container client-view">
@@ -94,7 +118,8 @@ function ClientView() {
               key={number}
               className={`drawn-number ${
                 number === latestNumber ? "latest" : ""
-              }`}
+              } ${markedNumbers.has(number) ? "marked" : ""}`}
+              onClick={() => toggleMark(number)}
             >
               {number}
             </div>
