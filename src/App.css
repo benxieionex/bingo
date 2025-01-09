@@ -3,6 +3,7 @@
   margin: 0 auto;
   padding: 1rem;
   text-align: center;
+  width: 100%;
 }
 
 .container {
@@ -340,5 +341,111 @@
 
   .drawn-numbers h2 {
     font-size: 1.2rem;
+  }
+}
+
+.client-view {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.client-view #root {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+.client-view .drawn-numbers {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  background: none;
+  border: none;
+}
+
+.client-view .number-grid {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(min(120px, calc(100% / 4 - 16px)), 1fr)
+  );
+  gap: 16px;
+  padding: 1rem;
+}
+
+.client-view .drawn-number {
+  cursor: default;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+.client-view .drawn-number:hover {
+  transform: none;
+  background-color: #2a2a2a;
+}
+
+.client-view .drawn-number.latest:hover {
+  background-color: #646cff;
+}
+
+.client-view .connection-status {
+  margin: 1rem;
+  padding: 2rem;
+  background: rgba(26, 26, 26, 0.1);
+  border-radius: 15px;
+  border: 2px solid rgba(100, 108, 255, 0.2);
+  color: #646cff;
+  font-size: 1.2rem;
+  animation: pulse 1.5s infinite;
+}
+
+.client-view .drawn-numbers-header {
+  padding: 0 1rem;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.6;
+  }
+}
+
+.client-view .drawn-number.latest::after {
+  font-size: 1rem;
+  padding: 4px 8px;
+  top: -10px;
+  right: -10px;
+}
+
+@media (max-width: 768px) {
+  .client-view .number-grid {
+    gap: 12px;
+    padding: 0.8rem;
+  }
+
+  .client-view .drawn-number {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .client-view .number-grid {
+    gap: 8px;
+    padding: 0.5rem;
+  }
+
+  .client-view .drawn-number {
+    font-size: 1.6rem;
   }
 }

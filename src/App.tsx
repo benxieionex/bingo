@@ -1,5 +1,13 @@
 import { useState, useEffect, useRef } from "react";
+import { io } from "socket.io-client";
 import "./App.css";
+
+const socket = io(`http://${window.location.hostname}:3001`, {
+  reconnection: true,
+  reconnectionDelay: 1000,
+  reconnectionDelayMax: 5000,
+  reconnectionAttempts: Infinity,
+});
 
 function App() {
   const [numbers, setNumbers] = useState<number[]>(() => {
@@ -24,10 +32,24 @@ function App() {
     );
 
     spinSound.current.loop = true;
+
+    // 連接時接收伺服器的初始狀態
+    socket.on("init", (initialNumbers: number[]) => {
+      if (initialNumbers.length > 0) {
+        setNumbers(initialNumbers);
+        setLatestNumber(initialNumbers[initialNumbers.length - 1]);
+      }
+    });
+
+    return () => {
+      socket.off("init");
+    };
   }, []);
 
   useEffect(() => {
     localStorage.setItem("drawnNumbers", JSON.stringify(numbers));
+    // 當號碼更新時，通知所有客戶端
+    socket.emit("numbers-updated", numbers);
   }, [numbers]);
 
   const getRandomNumber = () => {
