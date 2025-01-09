@@ -42,7 +42,7 @@ setInterval(() => {
   console.log("Current numbers:", currentNumbers);
 }, 5000);
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 1234;
 httpServer.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
