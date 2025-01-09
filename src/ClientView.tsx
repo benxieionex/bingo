@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { io } from "socket.io-client";
 import "./App.css";
 
@@ -15,6 +15,7 @@ function ClientView() {
   const [latestNumber, setLatestNumber] = useState<number | null>(null);
   const [sortByNewest, setSortByNewest] = useState(false);
   const [connected, setConnected] = useState(false);
+  const prevNumbersRef = useRef<number[]>([]);
   const [markedNumbers, setMarkedNumbers] = useState<Set<number>>(() => {
     const saved = localStorage.getItem("markedNumbers");
     return new Set(saved ? JSON.parse(saved) : []);
@@ -27,6 +28,19 @@ function ClientView() {
       JSON.stringify(Array.from(markedNumbers))
     );
   }, [markedNumbers]);
+
+  const updateNumbers = useCallback((newNumbers: number[]) => {
+    if (Array.isArray(newNumbers)) {
+      setNumbers(newNumbers);
+      if (newNumbers.length > prevNumbersRef.current.length) {
+        // 有新號碼出現
+        const newNumber = newNumbers[newNumbers.length - 1];
+        setLatestNumber(newNumber);
+        // 播放音效或其他效果可以在這裡添加
+      }
+      prevNumbersRef.current = newNumbers;
+    }
+  }, []);
 
   useEffect(() => {
     // 連接狀態處理
@@ -43,23 +57,13 @@ function ClientView() {
     // 接收初始數據
     socket.on("init", (initialNumbers: number[]) => {
       console.log("Received initial numbers:", initialNumbers);
-      if (Array.isArray(initialNumbers)) {
-        setNumbers(initialNumbers);
-        if (initialNumbers.length > 0) {
-          setLatestNumber(initialNumbers[initialNumbers.length - 1]);
-        }
-      }
+      updateNumbers(initialNumbers);
     });
 
     // 接收更新
     socket.on("numbers-updated", (updatedNumbers: number[]) => {
       console.log("Received updated numbers:", updatedNumbers);
-      if (Array.isArray(updatedNumbers)) {
-        setNumbers(updatedNumbers);
-        if (updatedNumbers.length > 0) {
-          setLatestNumber(updatedNumbers[updatedNumbers.length - 1]);
-        }
-      }
+      updateNumbers(updatedNumbers);
     });
 
     // 組件卸載時清理
@@ -69,7 +73,7 @@ function ClientView() {
       socket.off("init");
       socket.off("numbers-updated");
     };
-  }, []);
+  }, [updateNumbers]);
 
   const getSortedNumbers = () => {
     if (sortByNewest) {

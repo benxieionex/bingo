@@ -175,6 +175,14 @@ function App() {
     }
   };
 
+  const clearAllNumbers = () => {
+    if (window.confirm("確定要清除所有號碼嗎？此操作無法復原。")) {
+      setNumbers([]);
+      setLatestNumber(null);
+      socket.emit("numbers-updated", []);
+    }
+  };
+
   return (
     <div className="container">
       <button
@@ -235,6 +243,9 @@ function App() {
                 />
               </label>
             </div>
+            <button onClick={clearAllNumbers} className="clear-button">
+              清除全部 🗑️
+            </button>
           </div>
         </div>
 
