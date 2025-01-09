@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { io } from "socket.io-client";
 import "./App.css";
 
-const socket = io(`http://${window.location.hostname}:3001`, {
+const socket = io(`http://${window.location.hostname}:1234`, {
   reconnection: true,
   reconnectionDelay: 1000,
   reconnectionDelayMax: 5000,
