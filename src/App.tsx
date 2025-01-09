@@ -20,6 +20,7 @@ function App() {
   const [isSoundEnabled, setIsSoundEnabled] = useState(true);
   const [latestNumber, setLatestNumber] = useState<number | null>(null);
   const [sortByNewest, setSortByNewest] = useState(false);
+  const [spinDuration, setSpinDuration] = useState(500);
   const spinSound = useRef<HTMLAudioElement | null>(null);
   const winSound = useRef<HTMLAudioElement | null>(null);
 
@@ -84,7 +85,7 @@ function App() {
 
     let duration = 0;
     const spinInterval = 50;
-    const totalDuration = 500;
+    const totalDuration = spinDuration;
 
     const interval = setInterval(() => {
       setCurrentNumber(getRandomNumber());
@@ -147,13 +148,27 @@ function App() {
             </div>
           </div>
 
-          <button
-            onClick={spinNumbers}
-            disabled={isSpinning || numbers.length >= 75}
-            className="spin-button"
-          >
-            {isSpinning ? "抽獎中..." : "抽號碼"}
-          </button>
+          <div className="control-panel">
+            <div className="duration-control">
+              <label>轉動時間: {(spinDuration / 1000).toFixed(1)}秒</label>
+              <input
+                type="range"
+                min="500"
+                max="10000"
+                step="100"
+                value={spinDuration}
+                onChange={(e) => setSpinDuration(Number(e.target.value))}
+                disabled={isSpinning}
+              />
+            </div>
+            <button
+              onClick={spinNumbers}
+              disabled={isSpinning || numbers.length >= 75}
+              className="spin-button"
+            >
+              {isSpinning ? "抽獎中..." : "抽號碼"}
+            </button>
+          </div>
         </div>
 
         <div className="drawn-numbers">

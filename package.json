@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start": "serve dist"
+    "start": "node server.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
