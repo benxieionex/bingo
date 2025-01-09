@@ -539,3 +539,43 @@
   background: #4a4a4a;
   cursor: not-allowed;
 }
+
+.import-export-controls {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.export-button,
+.import-button {
+  flex: 1;
+  background-color: #2a2a2a;
+  color: white;
+  border: 2px solid #646cff;
+  border-radius: 8px;
+  padding: 0.8rem 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.export-button:hover,
+.import-button:hover {
+  background-color: #646cff;
+  transform: scale(1.05);
+}
+
+.export-button:active,
+.import-button:active {
+  transform: scale(0.95);
+}
+
+@media (max-width: 768px) {
+  .import-export-controls {
+    flex-direction: column;
+  }
+}

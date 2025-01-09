@@ -23,6 +23,7 @@ function App() {
   const [spinDuration, setSpinDuration] = useState(500);
   const spinSound = useRef<HTMLAudioElement | null>(null);
   const winSound = useRef<HTMLAudioElement | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     spinSound.current = new Audio(
@@ -126,6 +127,54 @@ function App() {
     return [...numbers].sort((a, b) => a - b);
   };
 
+  const exportNumbers = () => {
+    // 直接使用原始順序，不進行排序
+    const content = numbers.join("\n");
+
+    const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `bingo-numbers-${new Date().toISOString().split("T")[0]}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const importNumbers = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const content = e.target?.result as string;
+        // 將文字內容按行分割，過濾空行，轉換為數字
+        const importedNumbers = content
+          .split("\n")
+          .map((line) => line.trim())
+          .filter((line) => line !== "")
+          .map((line) => parseInt(line, 10))
+          .filter((num) => !isNaN(num) && num > 0 && num <= 75);
+
+        if (importedNumbers.length > 0) {
+          setNumbers(importedNumbers);
+          setLatestNumber(importedNumbers[importedNumbers.length - 1]);
+          socket.emit("numbers-updated", importedNumbers);
+        } else {
+          alert("無效的檔案格式或沒有有效的號碼");
+        }
+      } catch {
+        alert("讀取檔案時發生錯誤");
+      }
+    };
+    reader.readAsText(file);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
   return (
     <div className="container">
       <button
@@ -168,6 +217,24 @@ function App() {
             >
               {isSpinning ? "抽獎中..." : "抽號碼"}
             </button>
+            <div className="import-export-controls">
+              <button onClick={exportNumbers} className="export-button">
+                匯出號碼 💾
+              </button>
+              <label
+                className="import-button"
+                title="請選擇之前匯出的 .txt 檔案"
+              >
+                匯入號碼 📂
+                <input
+                  type="file"
+                  accept=".txt"
+                  onChange={importNumbers}
+                  ref={fileInputRef}
+                  style={{ display: "none" }}
+                />
+              </label>
+            </div>
           </div>
         </div>
 
