@@ -20,7 +20,7 @@ function App() {
   const [isSoundEnabled, setIsSoundEnabled] = useState(true);
   const [latestNumber, setLatestNumber] = useState<number | null>(null);
   const [sortByNewest, setSortByNewest] = useState(false);
-  const [spinDuration, setSpinDuration] = useState(500);
+  const [spinDuration, setSpinDuration] = useState(5000);
   const spinSound = useRef<HTMLAudioElement | null>(null);
   const winSound = useRef<HTMLAudioElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
